@@ -1,0 +1,270 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.3&appId=4898953686&autoLogAppEvents=1"></script>
+
+<h1>{% trans "Sign In" %}</h1>
+
+{% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+<p>{% blocktrans with site.name as site_name %}Please sign in with one
+of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+
+<div class="socialaccount_ballot">
+
+  <ul class="socialaccount_providers">
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+  </ul>
+
+  <div class="login-or">{% trans 'or' %}</div>
+
+</div>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+{% else %}
+<p>{% blocktrans %}If you have not created an account yet, then please
+<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+{% endif %}
+
+<form class="login" method="POST" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+  <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
+</form>
+
+  <div id="connected_no_such_user" style="display: none;"><div id="fb_email" class="fb_email" style="display: none;"></div><div id="fb_uid" class="fb_uid" style="display: none;"></div><a href="#" onclick="facebook_login_create_new();">Continue Login from Facebook</a>
+  <script>
+	function facebook_login_create_new(){
+		email = document.getElementById('fb_email').innerHTML;
+		uid = document.getElementById('fb_uid').innerHTML;
+		$.ajax({
+			url: '/ajax/authenticate',
+			data: { "email": email,
+				"uid": uid,
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+			       },
+			dataType: 'json',
+			type: 'post',
+			csrfmiddlewaretoken: '{{ csrf_token }}',
+			success: function(data, email) {
+					}
+		});
+	}
+  </script>
+  </div>
+  <div id="connected_email_not_available" style="display: none;"><a href="#">Login from Facebook</a>
+  </div>
+  <div id="not_connected" style="display: none;"><a href="#">login facebook</a>
+  </div>
+
+<a href="https://www.facebook.com/v4.0/dialog/oauth?client_id=22252858575642484&redirect_uri=https%3A%2F%2Fwww.pjforce.com&state=abcdefg">Manual Facebook login</a>
+
+  <div id="connected_login_success" style="display: none;"><a href="#">You have already login via Facebook</a>
+  </div>
+
+  <div id="myfb-login-new1" style="display: none;" class="fb-login-button" data-width="" data-size="large" data-button-type="continue_with" data-auto-logout-link="false" data-use-continue-as="true"></div><div class="fb-login-button" syle="display:none;" data-width="" data-size="large" data-button-type="continue_with" data-auto-logout-link="false" data-use-continue-as="true" data-scope="email,profile"></div>
+  <div id="proceedFBLogin"></div>
+  <div id="loginStatus"></div>
+  <div id="FBloginerror"></div>
+<script>
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '2225285857562484',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v3.3'
+    });
+      
+    FB.AppEvents.logPageView();   
+    FB.getLoginStatus(function(response) {
+		callBackLoginStatus(response);
+	});
+//    FB.getLoginStatus(function(response) {
+//		if(response.status=='connected'){
+//			this.access_token = response.authResponse.accessToken;
+//			FB.api('/me',
+//			       {'fields': 'email'}, 
+//				function(response) {
+//				console.log(JSON.stringify(response));
+//				email = response.email
+//				uid = response.id
+//				$.ajax({
+//					url: '/ajax/authenticate',
+//					data: { "email": email,
+//						"uid": uid,  },
+//					dataType: 'json',
+//					success: function(data, email) {
+//						console.log(JSON.stringify(data));
+//						if(data.message="No such user")
+//						{
+//							email_obj = document.getElementById('fb_email');
+//							email_obj.innerHTML = data.username;
+//							uid_obj = document.getElementById('fb_uid');
+//							uid_obj.innerHTML = data.uid;
+//							mybutton=document.getElementById('connected_no_such_user');
+//							if(mybutton){
+//								mybutton.style.display="block";
+//							}
+//					
+//						}
+//					}
+//				});
+//			});
+//		}else{
+//			//FB.login(function(response) {
+//			//	console.log(response);
+//			//}, {scope: 'email, profile'});
+//			console.log('User has not login');
+//			mybutton=document.getElementById('not_connected');
+//			if(mybutton){
+//				mybutton.style.display="block";
+//			}
+//		}
+//		
+//	});
+      
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+   function callBackLoginStatus(response){
+	console.log("callBackLoginStatus Called");
+	console.log("Response is " + response.status + ".");
+	if(response.status=="unknown"){
+		console.log("User has not logined FB or did not authorize for this APP to use FB login");
+	} else if(response.status=="not_authorized")
+	{
+		console.log("User has logined FB but did not authorize for this APP to use FB login");
+	}
+	else if(response.status=="connected")
+	{
+		console.log("User has logined FB and authorized to login");
+		// try to get user's ID and email
+		console.log("User's FB ID is " + response.authResponse.userID + "."); 
+		thisAccessToken = response.authResponse.accessToken
+		FB.api('/me', {fields: 'picture' }, function (response) {
+				console.log(response);
+				document.getElementById("loginStatus").innerHTML = "<img src=\"" + response.picture.data.url + "\">";
+				document.getElementById("proceedFBLogin").innerHTML = '<a href="#" onclick="onClickProceedFBLogin()">Continue login with Facebook</a>';
+				console.log("csrf=" + getCookie('csrftoken'));
+
+			});		
+	}
+   }
+
+   function onClickProceedFBLogin() {
+	console.log("Proceed to FB login");
+	csrftoken = getCookie('csrftoken');
+	// Setup the ajax call, for all subsequent
+	// ajax call, set the request header
+	// X-CSRFToken = csrftoken
+	// if it is not a GET request and 
+	// if crossdomain = False, (default = False)
+
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+		if(!csrfSafeMethod(settings.type) && !this.crossDomain){
+			xhr.setRequestHeader("X-CSRFToken", csrftoken);
+		}
+		}
+	});
+
+	// Send the ajax post request
+    	FB.getLoginStatus(function(response) {
+		console.log(response);
+		if(response.status=="connected"){
+		// Can proceed to login
+
+		// Get FB user id, email
+		FB.api('/me', {fields: 'email,first_name, last_name, birthday' }, function (response) {
+			console.log(response);
+			fb_email = response.email;
+			fb_first_name = response.first_name;
+			fb_last_name = response.last_name;
+			fb_uid = response.id;
+			fb_birthday = "";
+
+			// trigger a AJAX POST call
+			$.ajax({
+				url: '/ajax/authenticate',
+				data: { "email": fb_email,
+				"uid": fb_uid,
+				"first_name": fb_first_name,
+				"last_name": fb_last_name,
+				"birthday": fb_birthday  },
+				type: "POST",
+				dataType: 'json',
+				success: function(data) {
+					console.log("success POST");
+					console.log(data);
+					if(data.message=="OK"){
+						window.location.href="/";
+					}else{
+						document.getElementById("FBloginerror").innerHTML=data.message;
+					}
+				}
+			});
+		});
+
+
+		}else
+		{
+			// Trigger FB.login
+		}
+	});
+
+   }
+
+   function statusChangeCallback(response){
+	console.log("response status: " + response.status );
+   }
+
+   function triggerFBLogin()
+   {
+	console.log("this button is clicked");
+   }
+
+   function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+     return cookieValue;
+   }
+
+  function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+</script>
+
+
+{% endblock %}

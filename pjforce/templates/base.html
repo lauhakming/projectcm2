@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load static %}
+{% load i18n %}
+
+<html lsng="en">
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Some general description to help search engine find this document">
+	 <!-- Bootstrap core CSS -->	
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<!-- Application CSS -->
+	<link href="{% static 'css/base.css' %}" rel="stylesheet">
+	<link rel="shortcut icon" href="#"/>
+     <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
+  </head>
+  <body>
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+		<a class="navbar-brand" href="/">PJforce</a>
+      		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        		<span class="navbar-toggler-icon"></span>
+      		</button>
+		<div class="collapse navbar-collapse" id="navbarsDefault">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item"><a class="nav-link" href="#">{% trans 'About us' %}</a></li>
+				<li class="nav-item"><a class="nav-link" href="#">{% trans 'Contact us' %}</a></li>
+{% if request.user.is_authenticated %}
+				<li class="nav-item"><a class="nav-link" href="/accounts/logout">{% trans 'Log out' %}</a></li>
+<li class="nav-item"><a href="#" class="nav-link">
+Welcome {{ user.username }}
+</a>
+</li>
+
+{% else %}
+				<li class="nav-item"><a class="nav-link" href="/accounts/login">{% trans 'Sign In' %}</a></li>
+{% endif %}
+				<li class="nav-item"><form action="{% url 'set_language' %}" method="post" id="lang_form_en" >{% csrf_token%} <input name="language" type="hidden" value="en"><a class="nav-link" href="#" onclick="document.getElementById('lang_form_en').submit();">En</a></form></li>
+				<li class="nav-item"><form action="{% url 'set_language' %}" method="post" id="lang_form_zh" >{% csrf_token%} <input name="language" type="hidden" value="zh-TW"><a class="nav-link" href="#" onclick="document.getElementById('lang_form_zh').submit();">中</a></form></li>
+			</ul>
+		</div>
+	
+	</nav>
+    {% block body %}
+
+
+    {% block content %}
+    {% endblock %}
+    {% endblock %}
+    {% block extra_body %}
+    {% endblock %}
+
+    <!-- JQuery and javascript is loaded at the end of the document -->
+<script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  </body>
+</html>
