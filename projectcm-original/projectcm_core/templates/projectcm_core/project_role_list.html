@@ -1,0 +1,29 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container">
+<table class="table">
+{% if project_role_list %}
+<thead>
+<t><h4>User who has a project role in this project</h4></td>
+</thead>
+<thead><td><h5>User</h5></td>
+<td><h5>Role</h5></td>
+<td><h5>Company Name and Project Name</h5></td>
+<td></td>
+<td><a href="role/add" class="btn btn-info btn-lg"><span class="glyphicon glyphicon-plus"></span>Add More Role</a></td>
+</thead>
+{% for role in project_role_list %}
+<tr>
+<td>{{ role.projectuser.username }}</td>
+<td>{{ role.projectrole }}</td>
+<td>{{ role.project }}</td>
+<td><a href="role/{{ role.id }}/modify" class="btn btn-primary btn-lg" role="button" aria-disabled="true">Modify</a></td>
+<td><a href="role/{{ role.id }}/delete" class="btn btn-primary btn-lg" role="button" aria-disabled="true">Delete</a></td>
+</tr>
+
+{% endfor %}
+{% endif %}
+</table>
+</div>
+{% endblock %}

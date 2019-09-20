@@ -1,0 +1,268 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+<title>CM Project Management Portal</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+	
+
+
+	<style>
+	body {
+		padding-top: 0px;
+	}
+	
+	</style>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="{% static "js/projectcm-time.js" %}">
+</script>
+<script>
+function redrawGantt(){
+	var taskID = arguments[0];
+	var taskname_id = taskID + "_1";
+	var taskname = document.getElementById(taskname_id).value;
+	window.alert("redraw" + taskname);
+}
+
+function daysInMonth(iMonth, iYear)
+{
+return 32 - new Date(iYear, iMonth, 32).getDate();
+}
+
+function addOneMonth(theDate){
+	thisYear = theDate.getFullYear();
+	nextYear = thisYear;
+	thisMonth = theDate.getMonth();
+	nextMonth = (thisMonth + 1)%12;
+	if(thisMonth==12){
+		nextYear = thisYear + 1;
+	}
+	return Date(nextYear, nextMonth+1, 1);
+}
+
+function findmaxdate(arraydate){
+	var maxdate, curdate;
+	if (arraydate.length <=0)
+		return;
+	maxdate = new Date(arraydate[0])
+	for(i=0; i < arraydate.length; i++)
+	{
+		curdate = new Date(arraydate[i]);
+		if(curdate > maxdate)
+		{
+			maxdate = curdate;
+		}
+	}
+	return maxdate;
+}
+
+function findmindate(arraydate){
+	var mindate, curdate;
+	if(arraydate.length <=0)
+		return;
+	mindate = new Date(arraydate[0])
+	for(i=0; i < arraydate.length; i++)
+	{
+		curdate = new Date(arraydate[i]);
+		if(curdate < mindate)
+		{
+			mindate = curdate;
+		}
+	}
+	return mindate;
+}
+
+function getMonthBetweenDates(fromDate, toDate)
+{
+	return toDate.getMonth() - fromDate.getMonth() + 12* (toDate.getFullYear() - fromDate.getFullYear());
+}	
+
+function getDaysBetweenDates(fromDate, toDate){
+	return (Date.UTC(toDate.getFullYear(), toDate.getMonth(), toDate.getDate()) - Date.UTC(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()))/86400000; 	
+}
+
+function drawGantt(){
+
+	tasklists = document.getElementsByClassName('task_lists');
+	dynamicgantt = document.getElementsByClassName('dynamic-gantt')[0];
+	//window.alert(dynamicgantts.length);
+
+	// Get max and min date
+	var tasknamearray = [];
+	var plannedstartdatearray = [];
+	var plannedcompletedatearray = [];
+
+	if (tasklists.length <= 0)
+		return;
+
+	for (i=1; i <= tasklists.length; i++)
+	{
+		tasknamearray.push(document.getElementById("task_" +i + "_1").value);
+		plannedstartdatearray.push(document.getElementById("task_" +i + "_3").value);
+		plannedcompletedatearray.push(document.getElementById("task_" + i + "_4").value);
+	}
+
+	maxPlannedDate = findmaxdate(plannedcompletedatearray);
+	minPlannedDate = findmindate(plannedstartdatearray);
+
+	//window.alert(maxPlannedDate);
+	//window.alert(minPlannedDate);	
+	startyear = minPlannedDate.getFullYear();
+	endyear = maxPlannedDate.getFullYear();
+	startmonth = minPlannedDate.getMonth();
+	endmonth = maxPlannedDate.getMonth();
+	// round up the start date to begining of month and end of month
+	startdate = new Date(startyear, startmonth, 1);
+	enddate = new Date(endyear, endmonth, daysInMonth(endmonth, endyear));
+	window.alert(startdate);
+	//window.alert(enddate);
+	// calculate how many month and how many days have to display
+	nummonth=(getMonthBetweenDates(startdate, enddate));
+	numdays=(getDaysBetweenDates(startdate, enddate));
+
+	// draw the date header
+	node = document.createElement('div');
+	node.className = 'ganttrow';
+	childnode = document.createElement('div');
+	childnode.className='gantt__row__col1';
+	node.appendChild(childnode);
+	loopdays = 0;
+	var loopstartdate = new Date(startdate.getFullYear(), startdate.getMonth(), startdate.getDate());
+	window.alert(loopstartdate);
+	window.alert(loopstartdate.getMonth());
+	
+	for(i=0; i <= nummonth; i++)
+	{
+		startColumn = loopdays+1;
+		loopstartmonth = loopstartdate.getMonth();
+		loopstartyear = loopstartdate.getFullYear();
+		thismonthdays = daysInMonth(loopstartmonth, loopstartyear);
+		endColumn = thismonthdays + startColumn;
+		loopdays = thismonthdays;
+		childnode2 = document.createElement('span');
+		childnode2.style = "grid-column: " + startColumn + "/" + endColumn + ";";
+		//childnode2.innerHTML = loopstartdate.getFullYear() + "/" loopstartdate.getMonth();
+		node.appendChild(childnode2);
+		loopstartdate = addOneMonth(loopstartdate);
+		
+	}
+
+	for (i=1; i <= tasklists.length; i++)
+	{ 
+	var taskname = document.getElementById("task_" + i + "_1").value;
+	node = document.createElement('div');
+	node.className = 'ganttrow';
+	childnode = document.createElement('div');
+	childnode.className='gantt__row__col1';
+	childnode.innerHTML= taskname;
+	childnode2 = document.createElement('ul');
+	childnode2.className='gantt__row-bars';
+	bar = document.createElement('li');
+	bar.style = 'grid-column: 100/120';
+	//bar.background-color = 'ff6252';
+	childnode2.appendChild(bar);
+	node.appendChild(childnode);
+	node.appendChild(childnode2);
+	dynamicgantt.appendChild(node);
+	// add row in dynamic gannt
+	}
+}
+</script>
+	<style>
+	body {
+		padding-top: 0px;
+	}
+	
+	.wrapper {
+		max-width: 1200px;
+		min-width: 700px;
+		margin: 0 auto;
+		padding: 40px;
+
+
+	}
+	
+	.gantt {
+		display: grid;
+		border: 2;
+		border-radius: 12px;
+		position: relative;
+		overflow: hidden;
+		box-sizing: border-box;
+		box-shadow: 0 75px 125px -57px #7e8f94;
+	}
+
+	.ganttrow{
+			display: grid;
+			grid-template-columns: 150px 1fr;
+		
+	}
+	
+	.gantt__row__months{
+			display: grid;
+			grid-template-columns: repeat(12, 1fr);
+	}
+	
+	.gantt__row-bars {
+			list-style: none;
+			display: grid;
+			padding: 9px 0;
+			margin: 0;
+			grid-template-columns: repeat(365, 1fr);
+			grid-gap: 8px 0;
+			border-top: 1px solid rgba(221, 221, 221, 0.8);
+	}
+	
+	.gantt__row-bars li {
+			font-weight: 500;
+			text-align: left;
+			font-size: 14px;
+			min-height: 15px;
+			background-color: #55de84;
+			padding: 5px 12px;
+			color: #fff;
+			overflow: hidden;
+			position: relative;
+			cursor: pointer;
+			border-radius: 20px;
+	}
+	
+	
+	</style>
+
+
+    </head>
+   <body>
+
+	{% if user.is_authenticated %}
+	<div class="container-fluid">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+		<ul class="nav navbar-nav">
+			<li><a class="navbar-brand" href="{% url 'project_home' %}">CMProject</a></li>
+			<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Projects
+			</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="{% url 'project_new' %}">Create New Project</a>
+					<a class="dropdown-item" href="{% url 'project_listall' %}">Manage My Projects</a>
+				</div>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{% url 'logout' %}">logout</a>
+			</li>
+		</ul>
+	</nav>
+	</div>
+	<div class="content container-fluid">
+			{% block content %}
+			{% endblock %}
+	</div>
+	{% else %}
+		<li><a href="{% url 'login'%}?next={{ request.path }}">login</a></li>
+	{% endif%}
+     </body>
+</html>

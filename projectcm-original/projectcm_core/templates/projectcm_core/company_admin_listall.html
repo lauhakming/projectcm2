@@ -1,0 +1,19 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+
+<div class="tableContentLayout">
+{% if company_admin_list  %}
+{% for company in company_admin_list %}
+<div class="tableContent">
+<span>{{ company.company_name }}</span>
+<span><a href="company/{{ company.id }}/modify" class="btn btn-primary btn-sm" role="button" aria-disabled="true">Modify</a></span>
+<span><a href="company/{{ company.id }}/delete" class="btn btn-primary btn-sm" role="button" aria-disabled="true
+">Delete</a></span>
+</div>
+
+{% endfor %}
+{% endif %}
+</div>
+
+{% endblock %}

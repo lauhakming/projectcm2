@@ -1,0 +1,21 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+
+<table class="table">
+{% if project_manage_list %}
+{% for project in project_manage_list %}
+<tr>
+<td class="col-lg-8"><h4>{{ project.pjname }}</h4></td>
+<td class="col-lg-1"><a href="manage/{{ project.id }}/modify" class="btn btn-primary btn-lg" role="button" aria-disabled="true">Modify</a></td>
+<td class="col-lg-1"><a href="manage/{{ project.id }}/delete" class="btn btn-primary btn-lg" role="button" aria-disabled="true
+">Delete</a></td>
+<td class="col-lg-1"><a href="manage/{{ project.id }}/role" class="btn btn-primary btn-lg" role="button" aria-disabled="true">Role</a></td>
+<td class="col-lg-1"><a href="manage/{{ project.id }}/task" class="btn btn-primary btn-lg" role="button" aria-disabled="true">Tasks</a></td>
+</tr>
+
+{% endfor %}
+{% endif %}
+</table>
+
+{% endblock %}

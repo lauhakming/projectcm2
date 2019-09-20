@@ -1,0 +1,85 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row">
+<div class="tasks_column col-lg-10">
+<p><h5>Tasks</h5></p>
+<p>
+<span><button type="button" class="btn btn-link"><a href="{{ request.path }}?taskstatus=ALL">All</a></button></span>
+<span><button type="button" class="btn btn-link" ><a href="{{ request.path }}?taskstatus=INPROGRESS">In Progress</a></button></span>
+<span><button type="button" class="btn btn-link"><a href="{{ request.path }}?taskstatus=COMPLETED">Completed</a></button></span>
+<span><button type="button" class="btn btn-link"><a href="{{ request.path }}?taskstatus=OPEN">Open</a></button></span>
+</p>
+<table class="table">
+<thead>
+  <tr>
+    <th scope="col"></th>
+    <th scope="col">Task</th>
+    <th scope="col">Description</th>
+    <th scope="col">Planned Start</th>
+    <th scope="col">Planned End</th>
+    <th scope="col">Actual Start</th>
+    <th scope="col">Actual End</th>
+    <th scope="col">Owner</th>
+    <th scope="col">Status</th>
+    <th scope="col">Project</th>
+    <th scope="col"></td>
+  </tr>
+</thead>
+{% if task_list %}
+{% for task in task_list %}
+<div class="tasks">
+<tr>
+<th scope="row"></th>
+<td>{{ task.taskname }}</td>
+<td>{{ task.taskdescription }}</td>
+<td>{{ task.plannedstartdate }}</td>
+<td>{{ task.plannedcompletedate }}</td>
+<td>{{ task.actualstartdate }}</td>
+<td>{{ task.actualcompletedate }}</td>
+<td>{{ task.ownedby }}</td>
+<td>{{ task.taskstatus }}</td>
+<td>{{ task.project.pjname }}</td>
+<td><button type="button" class="btn btn-light"><a href="{{ request.path }}task/{{ task.id }}">Update</a></button></td>
+</tr>
+</div>
+{% endfor %}
+{% else %}
+<div class="message">
+<p>No task</p>
+</div>
+{% endif %}
+</table>
+</div>
+
+<div class="projects_column col-lg-2">
+{% if project_list %}
+{% for project in project_list %}
+<div class="project">
+<p><table class="table">
+<tr>
+<td>Project:</td>
+<td> <a href="{{ project.id }}">{{ project.pjname }}</a></td>
+</tr>
+<tr>
+<td>Company:</td>
+<td>{{ project.company }}</td>
+</tr>
+<tr>
+<td>Created by:</td>
+<td>{{ project.created_by }}</td>
+</tr>
+
+
+</table></p>
+</div>
+{% endfor %}
+{% else %}
+<div class="message">
+<p>No projects to show</p>
+</div>
+{% endif %}
+</div>
+</div>
+{% endblock %}

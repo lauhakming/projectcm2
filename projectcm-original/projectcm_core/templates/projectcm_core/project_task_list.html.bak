@@ -1,0 +1,137 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+
+<!- populate the tasklist data -->
+{% if project_task_list %}
+	<div class="readonly_tasklists" style="display: none;">
+	{% for task in project_task_list %}
+		<div class="task_lists">
+			<span id="task_{{ forloop.counter }}_0">{{ task.id }}</span>
+			<span id="task_{{ forloop.counter }}_1">{{ task.taskname }}</span>
+			<span id="task_{{ forloop.counter }}_2">{{ task.taskdescription }}</span>
+			<span id="task_{{ forloop.counter }}_3">{{ task.plannedstartdate | date:"Y-m-d" }}</span>
+			<span id="task_{{ forloop.counter }}_4">{{ task.plannedcompletedate | date:"Y-m-d" }}</span>
+			<span id="task_{{ forloop.counter }}_5">{{ task.actualstartdate | date:"Y-m-d" }}</span>
+			<span id="task_{{ forloop.counter }}_6">{{ task.actualcompletedate | date:"Y-m-d" }}</span>
+			<span id="task_{{ forloop.counter }}_7">{{ task.ownedby }}</span>
+			<span id="task_{{ forloop.counter }}_8">{{ task.plannedresource }}</span>
+			<span id="task_{{ forloop.counter }}_9">{{ task.actualresource }}</span>
+		</div>
+	{% endfor %}
+	</div>
+{% endif %}
+
+
+<div class="row">
+<table class="table" style="table-layout:fixed;">
+<thead>
+<td colspan="4"><h4>Task in this project  
+{% if project %}
+- {{ project.pjname }}
+{% else %}
+- unknown
+{% endif %}
+</h4></td>
+</thead>
+<thead>
+<td width="5%"></td>
+<td width="10%"><h5>Task Name</h5></td>
+<td width="25%"><h5>Task Description</h5></td>
+<td width="7%"><h5>Planned Start Date</h5></td>
+<td width="7%"><h5>Planned End Date</h5></td>
+<td width="7%"><h5>Actual Start Date</h5></td>
+<td width="7%"><h5>Actual End Date</h5></td>
+<td width="7%"><h5>Action by</h5></td>
+<td width="7%"><h5>Planned Resource</h5></td>
+<td width="7%"><h5>Actual Resource</h5></td>
+<td width="5%"></td>
+<td width="5%"></td>
+</thead>
+{% if project_task_list %}
+{% for task in project_task_list %}
+<tr>
+<td width="5%"><a href="task/{{ task.id }}/up"><i class="fas fa-angle-up"></i></a>
+<a href="task/{{ task.id }}/down""><i class="fas fa-angle-down"></i></a>
+</td>
+<form id="form_t_{{ forloop.counter }}" action="task/{{ task.id }}/modify" method="POST">
+{% csrf_token %}
+<div class="task_lists_form">
+<td width="10%"><div class="task_name"><input type="text" class="form-control-plaintext" id="taskform_{{ forloop.counter }}_1" name="taskname" value="{{ task.taskname }}"></div></td>
+<td width="25%"><textarea class="form-control-plaintext" id="taskform_{{ forloop.counter }}_2" name="taskdescription">{{ task.taskdescription }}</textarea></td>
+<td width="7%"><input type="date" class="form-control" id="taskform_{{ forloop.counter }}_3" name="plannedstartdate" value='{{ task.plannedstartdate | date:"Y-m-d" }}'></td>
+<td width="7%"><input type="date" class="form-control" id="taskform_{{ forloop.counter }}_4" name="plannedcompletedate" value="{{ task.plannedcompletedate | date:'Y-m-d' }}"></td>
+<td width="7%"><input type="date" class="form-control" id="taskform_{{ forloop.counter }}_5" name="actualstartdate" value="{{ task.actualstartdate | date:'Y-m-d' }}"></td>
+<td width="7%"><input type="date" class="form-control" id="taskform_{{ forloop.counter }}_6" name="actualcompletedate" value="{{ task.actualcompletedate | date:'Y-m-d' }}"></td>
+<td width="7"><select class="form-control" id="taskform_{{ forloop.counter }}_7" name="ownedby">
+	{% for member in projectmember %}
+	<option {% if task.ownedby.id == member.projectuser.id %}selected="selected" {% endif %} value="{{ member.projectuser.id }}">{{ member.projectuser }}</option>
+	{% endfor %}
+</select></td>
+<td width="7%"><input type="number" class="form-control" id="taskform_{{ forloop.counter }}_8" name="plannedresource" value="{{ task.plannedresource  }}"></td>
+<td width="7%"><input type="number" class="form-control" id="taskform_{{ forloop.counter }}_9" name="actualresource" value="{{ task.actualresource }}"></td>
+<td width="5%"><a href="javascript:{}" class="btn btn-primary btn-lg" role="button" aria-disabled="true" onclick="document.getElementById('form_t_{{ forloop.counter }}').submit();">Save</a></td>
+</form>
+</div>
+<td width="5%"><a href="task/{{ task.id }}/delete" class="btn btn-primary btn-lg" role="button" aria-disabled="true">Delete</a></td>
+</tr>
+{% endfor %}
+<tr>
+<form method="POST" action="task/add" id="add-task-inline">
+{% csrf_token %}
+<td></td>
+<td><input type="text" class="form-control-plaintext" name="taskname" maxlength="40" required id="id_taskname"></td>
+<td><textarea name="taskdescription" class="form-control-plaintext" cols="40" rows="2" maxlength="100" id="idtaskdescription"></textarea></td>
+<td><input type="date" name="plannedstartdate" class="form-control" id="id_plannedstartdate"></td>
+<td><input type="date" name="plannedcompletedate" class="form-control" id="id_plannedcopletedate"></td>
+<td><input type="date" name="actualstartdate" class="form-control" id="id_actualstartdate"></td>
+<td><input type="date" name="actualcompletedate" class="form-control" id="id_actualcompletedate"></td>
+<td><select name="ownedby" class="form-control" required id="id_owndedby">
+	{% for member in projectmember %}
+	<option value="{{ member.projectuser.id }}">{{ member.projectuser }}</option>
+	{% endfor %}
+</select>
+</td>
+
+<td><input type="number" name="plannedresource" class="form-control" id="id_plannedresource"></td>
+<td><input type="number" name="actualresource" class="form-control" id="id_actualresource"></td>
+
+<td><a href="javascript:{}" class="btn btn-info btn-lg" role="button" aria-disabled="true" onclick="document.getElementById('add-task-inline').submit();">Add</a></td>
+
+</tr>
+{% else %}
+<tr><td colspan="10">No Task List for this project</td></tr>
+<tr>
+<form method="POST" action="task/add" id="add-task-inline">
+{% csrf_token %}
+<td></td>
+<td><input type="text" class="form-control-plaintext" name="taskname" maxlength="40" required id="id_taskname"></td>
+<td><textarea name="taskdescription" class="form-control-plaintext" cols="40" rows="2" maxlength="100" id="idtaskdescription"></textarea></td>
+<td><input type="date" name="plannedstartdate" class="form-control" id="id_plannedstartdate"></td>
+<td><input type="date" name="plannedcompletedate" class="form-control" id="id_plannedcopletedate"></td>
+<td><input type="date" name="actualstartdate" class="form-control" id="id_actualstartdate"></td>
+<td><input type="date" name="actualcompletedate" class="form-control" id="id_actualcompletedate"></td>
+<td><select name="ownedby" class="form-control" required id="id_owndedby">
+	{% for member in projectmember %}
+	<option value="{{ member.projectuser.id }}">{{ member.projectuser }}</option>
+	{% endfor %}
+</select>
+</td>
+<td><input type="number" name="plannedresource" class="form-control" id="id_plannedresource"></td>
+<td><input type="number" name="actualresource" class="form-control" id="id_actualresource"></td>
+
+<td><a href="javascript:{}" class="btn btn-info btn-lg" role="button" aria-disabled="true" onclick="document.getElementById('add-task-inline').submit();">Add</a></td>
+</tr>
+
+{% endif %}
+</table>
+</div>
+
+<div class="wrapper">
+	<div class="dynamic-gantt gantt">
+			<script>drawGanttFromElement();</script>
+	</div>
+</div>
+
+
+{% endblock %}

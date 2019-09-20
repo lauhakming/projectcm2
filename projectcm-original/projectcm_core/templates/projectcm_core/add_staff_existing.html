@@ -1,0 +1,50 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container">
+ <div class="container fluid">
+	<form>
+	{% csrf_token %}
+	<div class="two_column_grid_row">
+	<label for="username"><h5>Search by User Name/Email</h5></label>
+		<input type="text" class="form-control-plaintext inputsm" id="username" name="username" value="" placeholder="email/username">
+	</div>
+	<div class="two_column_grid_row">
+		<span></span>
+		<button type="submit" class="btn btn-default">Search</button>
+	</div>
+	</form>
+	
+	<div class="two_column_grid_row">
+	<span><h5>Search Result</h5></span>
+	<span></span>
+	</div>
+	{% if users %}
+	<div class="seven_column_grid_row grid_header">
+	<span>Username</span>
+	<span>First Name</span>
+	<span>Last Name</span>
+	<span>Email</span>
+	<span>Company Admin?</span>
+	<span>Is Staff?</span>
+	<span></span>
+	</div>
+		{% for user in users %}
+		<div class="seven_column_grid_row_alt">
+		<span>{{ user.username }}</span>
+		<span>{{ user.first_name }}</span>
+		<span>{{ user.last_name }}</span>
+		<span>{{ user.email }}</span>
+		<span><input type="checkbox"> Admin</span>
+		<span><a href="#">Add this staff</a></span>
+		<span><a href="#">profile</a></span>
+		</div>
+		{% endfor %}
+
+	{% else %}
+	<div class="one_column_grid">
+	No search result
+	</div>
+	{% endif %}
+ </div>
+{% endblock %}

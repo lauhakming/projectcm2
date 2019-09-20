@@ -1,0 +1,45 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container">
+<form method="POST" class="post-form">
+{% csrf_token %}
+<!- form.as_ul -->
+ <div class="container fluid">
+	<div class="two_column_grid_row">
+	<label for="company_name"><h5>Company Name</h5></label>
+		<input type="text" class="form-control-plaintext inputsm" id="company_name" name="company_name" value="ABC Company">
+	</div>
+	<div class="one_column_grid_row" style="text-align=left;">
+		<h5>Staffs</h5>
+	</div>
+	<div class="three_column_grid_row" style="text-align=right !important">
+		<span></span>
+		<span><a href="#" class="btn btn-primary" role="button">Add New Account as Company Staff</a></span>
+		<span><a href="{{ request.path }}/addstaff" class="btn btn-primary" role="button">Add Existing Account as Company Staff</a></span>
+	</div>
+
+	<div class="seven_column_grid_row grid_header">
+		<span>Username</span>
+		<span>First Name</span>
+		<span>Last Name</span>
+		<span>Email</span>
+		<span>Company Admin</span>
+		<span></span>
+		<span></span>
+	</div>	
+	{% for staff in staffs %}
+	<div class="seven_column_grid_row_alt">
+		<span>{{ staff.username }}</span>
+		<span>{{ staff.first_name }}</span>
+		<span>{{ staff.last_name}}</span>
+		<span>{{ staff.email }}</span>
+		<span></span>
+		<span><a href="#">Modify</a></span>
+		<span><a href="#">Unstaff</a><br><a href="#">Delete</a></span>
+	</div>
+	{% endfor %}
+		<h5>Holiday settings</h5>
+	</div>
+ </div>
+{% endblock %}

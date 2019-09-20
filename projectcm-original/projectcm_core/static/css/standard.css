@@ -1,0 +1,176 @@
+/* This style sheet is used to control all the formatting to be used for the projectcm 
+*/
+
+.grid_header {
+		font-size: 1em;
+		background-color: #0a3444 !Important;
+		color: #fff;
+}
+
+.one_column_grid_row {
+		display: grid;
+		grid-template-columns: auto;
+		padding:10px;
+		text-align: left;
+}
+
+.one_column_grid_row_alt:nth-child(even) {
+		display: grid;
+		grid-template-columns: auto;
+		padding: 10px;
+		text-align: left;
+		background-color: #CCC;
+}
+
+.one_column_grid_row_alt:nth-child(odd) {
+		display: grid;
+		grid-template-columns: auto;
+		padding: 10px;
+		text-align: left;
+		background-color: #FFF;
+}
+
+.two_column_grid_row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		padding:10px;
+		text-align: left;
+}
+
+
+
+.two_column_grid_row_alt:nth-child(even) {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		padding: 10px;
+		text-align: left;
+		background-color: #CCC;
+}
+
+.two_column_grid_row_alt:nth-child(odd) {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		padding: 10px;
+		text-align: left;
+		background-color: #FFF;
+}
+
+.three_column_grid_row {
+		display: grid;
+		grid-template-columns: auto auto auto;
+		padding:10px;
+		text-align: center;
+}
+
+
+.three_column_grid_row_alt:nth-child(even) {
+		display: grid;
+		grid-template-columns: auto auto auto;
+		padding: 10px;
+		text-align: center;
+		background-color: #CCC;
+}
+
+.three_column_grid_row_alt:nth-child(odd) {
+		display: grid;
+		grid-template-columns: auto auto auto;
+		padding: 10px;
+		text-align: center;
+		background-color: #FFF;
+}
+
+.four_column_grid_row {
+		display: grid;
+		grid-template-columns: auto auto auto auto;
+		padding:10px;
+		text-align: center;
+}
+
+
+.four_column_grid_row_alt:nth-child(even) {
+		display: grid;
+		grid-template-columns: auto auto auto auto;
+		padding: 10px;
+		text-align: center;
+		background-color: #CCC;
+}
+
+.four_column_grid_row_alt:nth-child(odd) {
+		display: grid;
+		grid-template-columns: auto auto auto auto;
+		padding: 10px;
+		text-align: center;
+		background-color: #FFF;
+}
+
+.five_column_grid_row {
+		display: grid;
+		grid-template-columns: auto auto auto auto auto;
+		padding:10px;
+		text-align: center;
+}
+
+
+.five_column_grid_row_alt:nth-child(even) {
+		display: grid;
+		grid-template-columns: auto auto auto auto auto;
+		padding: 10px;
+		text-align: center;
+		background-color: #CCC;
+}
+
+.five_column_grid_row_alt:nth-child(odd) {
+		display: grid;
+		grid-template-columns: auto auto auto auto auto;
+		padding: 10px;
+		text-align: center;
+		background-color: #FFF;
+}
+
+.six_column_grid_row {
+		display: grid;
+		grid-template-columns: auto auto auto auto auto auto;
+		padding:10px;
+		text-align: center;
+}
+
+
+.six_column_grid_row_alt:nth-child(even) {
+		display: grid;
+		grid-template-columns: auto auto auto auto auto auto;
+		padding: 10px;
+		text-align: center;
+		background-color: #CCC;
+}
+
+.six_column_grid_row_alt:nth-child(odd) {
+		display: grid;
+		grid-template-columns: auto auto auto auto auto auto;
+		padding: 10px;
+		text-align: center;
+		background-color: #FFF;
+}
+
+.seven_column_grid_row {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		padding:10px;
+		text-align: center;
+}
+
+
+.seven_column_grid_row_alt:nth-child(even) {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		padding: 10px;
+		text-align: center;
+		background-color: #CCC;
+}
+
+.seven_column_grid_row_alt:nth-child(odd) {
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		padding: 10px;
+		text-align: center;
+		background-color: #FFF;
+}

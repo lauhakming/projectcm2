@@ -1,0 +1,114 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row">
+	<div class="tasks_column col-lg-10">
+		<p><h5>Gantt Chart</h5></p>
+<!-- populate the member list -->
+
+	{% if projectmember %}
+		<div class="projectmembers" style="display: none;">
+		{% for member in projectmember %}
+			<span>{{ member.projectuser }}</span>
+		{% endfor %}
+		</div>
+	{% endif %}
+
+<!-- populate the tasklist data -->
+	{% if project_task_list %}
+		<div class="readonly_tasklists">
+			<div class="readonly_tasklistsHeader">
+				<span>Task ID</span>
+				<span>TaskName</span>
+				<span>Description</span>
+				<span>Planned Start</span>
+				<span>Planned End</span>
+				<span>Actual Start</span>
+				<span>Actual End</span>
+				<span>Owned by</span>
+				<span>Planned Resource</span>
+				<span>Actual Resource</span>
+			</div>
+			<div class="readonly_taskbody">
+		{% for task in project_task_list %}
+
+		  <div class="task_lists">
+			
+			<span id="task_{{ forloop.counter }}_0">{{ task.id }}</span>
+			<span id="task_{{ forloop.counter }}_1">{{ task.taskname }}</span>
+			<span id="task_{{ forloop.counter }}_2">{{ task.taskdescription }}</span>
+			<span id="task_{{ forloop.counter }}_3">{{ task.plannedstartdate | date:"Y-m-d" }}</span>
+			<span id="task_{{ forloop.counter }}_4">{{ task.plannedcompletedate| date:"Y-m-d" }}</span>
+			<span id="task_{{ forloop.counter }}_5">{{ task.actualstartdate| date:"Y-m-d" }}</span>
+			<span id="task_{{ forloop.counter }}_6">{{ task.actualcompletedate| date:"Y-m-d" }}</span>
+			<span id="task_{{ forloop.counter }}_7">{{ task.ownedby }}</span>
+			<span id="task_{{ forloop.counter }}_8">{{ task.plannedresource }}</span>
+			<span id="task_{{ forloop.counter }}_9">{{ task.actualresource }}</span>
+		  </div>
+		{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+<!-- draw the Gantt chart -->
+        <p><div class="dynamic-gantt gantt">
+                        <script>drawGanttFromElement();</script>
+        </div></p>
+
+<!-- alert panel -->
+
+	<p><h5>Project Status</h5></p>
+	<p><div class="dynamic-message-panel">
+			<script>drawMessagePanel();</script>
+	</div>
+	</p>
+<!-- draw the Resource Panel -->
+	<p><h5>Resource Chart</h5></p>
+	<p><div class="dynamic-resource gantt">
+			<script>drawResourcePanel();</script>
+	</div>
+	
+	<div class="resource-panel-options">
+	<select name="resource_aggrgate_target_user" onchange="redrawResourceChart(this);">
+		<option selected value="">All</option>
+		{% for member in projectmember %}
+		<option value='{{member.projectuser}}'>{{member.projectuser}}</option>
+		{% endfor%}
+	</select>
+	</div>
+	</p>
+
+	</div>
+
+
+<!-- link to other proejcts -->
+	<div class="projects_column col-lg-2">
+		{% if project_list %}
+		{% for project in project_list %}
+			<div class="project">
+			<p><table class="table">
+				<tr>
+				<td>Project:</td>
+				<td> <a href="{{ project.id }}">{{ project.pjname }}</a></td>
+				</tr>
+				<tr>
+				<td>Company:</td>
+				<td>{{ project.company }}</td>
+				</tr>
+				<tr>
+				<td>Created by:</td>
+				<td>{{ project.created_by }}</td>
+				</tr>
+			</table></p>
+			</div>
+		{% endfor %}
+		{% else %}
+			<div class="message">
+			<p>No projects to show</p>
+			</div>
+		{% endif %}
+	</div>
+</div>
+</div>
+</div>
+{% endblock %}

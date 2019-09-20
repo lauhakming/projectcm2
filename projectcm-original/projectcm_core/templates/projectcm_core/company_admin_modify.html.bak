@@ -1,0 +1,43 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container">
+<form method="POST" class="post-form">
+{% csrf_token %}
+<!- form.as_ul -->
+<div class="container fluid">
+<div class='one_column_form'>
+<div class='label'>Company Name</div>
+<div class='form-element'><span><input type='text' class='form-control-plaintext inputsm' id='company_name' name='company_name' value=''></span></div>
+<div class='label'>Staffs</div>
+
+<div class='element_six_cols_header'>
+<span>Username</span>
+<span>First Name</span>
+<span>Last Name</span>
+<span>Email</span>
+<span>5th column</span>
+</div>                 
+<div class='element_three_cols'>
+<span>1</span>
+<span>2</span>
+<span>3</span>
+</div>
+<div class='element_six_cols'>
+<span>levin_lau</span>
+<span>Levin</span>
+<span>Lau</span>
+<span>levin_lau@gmail.com</span>
+<span><a href="#">Modify</a></span>
+<span><a href="#">Unstaff</a>
+<br><a href="#">Delete Account</a></span>
+</div>         
+
+<div class='label'>Holiday settings</div>
+<div></div>
+
+<p><button type="submit" class="save btn btn-default">Save</button></p>
+</form>
+</div>
+</div>
+{% endblock %}
